@@ -18,15 +18,15 @@ MACHINE=raspi3b
 TARGET=kernel.elf
 
 # Object files made from source files
-OBJS=kernel.o queue.o process.o boot.o box.o process_asm.o libos.a 
+OBJS=./obj/kernel.o ./obj/queue.o ./obj/process.o ./obj/boot.o ./obj/box.o ./obj/process_asm.o ./obj/libos.a
 
 # source files 
-KERNEL_SRC=kernel.c
-QUEUE_SRC=queue.c
-PROCESS_SRC=s=process.c
-BOOT_SRC=boot.S
-BOX_SRC=box.S
-PROCESS_ASM_SRC=process_asm.s
+KERNEL_SRC=./src/kernel.c
+QUEUE_SRC=./src/queue.c
+PROCESS_SRC=./src/process.c
+BOOT_SRC=./src/boot.S
+BOX_SRC=./src/box.S
+PROCESS_ASM_SRC=./src/process_asm.S
 
 # make kernel.elf our target
 all: $(TARGET)
@@ -34,22 +34,22 @@ all: $(TARGET)
 $(TARGET): $(OBJS)
 	$(LD) $(LDFLAGS) $(OBJS) -o $@
 # kernel.o object should be compiled with kernel.c and CFLAGS
-kernel.o: $(KERNEL_SRC)
-	$(CC) $(CFLAGS) $< -o $@
+./obj/kernel.o: $(KERNEL_SRC)
+	$(CC) $(CFLAGS) -c $< -o $@
 # boot.o object should be compiled with boot.S and ASFLAGS
-boot.o: $(BOOT_SRC)
+./obj/boot.o: $(BOOT_SRC)
 	$(CC) $(ASFLAGS) -c $< -o $@
 # box.o object should be compiled with box.S and ASFLAGS
-box.o: $(BOX_SRC)
+./obj/box.o: $(BOX_SRC)
 	$(CC) $(ASFLAGS) -c $< -o $@
 # queue.o object should be compiled with queue.c, queue.h and CFLAGS
-queue.o: $(QUEUE_SRC)
+./obj/queue.o: $(QUEUE_SRC)
 	$(CC) $(CFLAGS) -c $< -o $@
 # process.o object should be compiled with process.c, process.h and CFLAGS
-process.o: $(PROCESS_SRC)
+./obj/process.o: $(PROCESS_SRC)
 	$(CC) $(CFLAGS) -c $< -o $@
 # process_asm.o object should be compiled with process_asm.S and ASFLAGS
-process_asm.o: $(PROCESS_ASM_SRC)
+./obj/process_asm.o: $(PROCESS_ASM_SRC)
 	$(CC) $(ASFLAGS) -c $< -o $@
 
 # run using the target as a dependency
@@ -63,4 +63,4 @@ debug: $(TARGET)
 
 # delete all possible object files, .elf files, and .d dependency files 
 clean:
-	rm *.o *.elf *.d
+	rm ./obj/*.o *.elf ./obj/*.d

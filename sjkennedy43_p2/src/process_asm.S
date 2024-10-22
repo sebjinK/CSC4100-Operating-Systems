@@ -2,8 +2,8 @@ section .text:
 .global _dispatch
 .global go
 .extern enqueue
+.extern dequeue
 .extern ready_queue
-.extern stacks
 .extern running
 _dispatch:
     SUB SP, SP, 256; subtract 16 * 16 from the stack 
@@ -26,19 +26,28 @@ _dispatch:
     STP X29, X30, [SP, 240]
     STP X31, X32, [SP, 256]        
     ; put the PSTATE int the stack with the following code:
-;   mrs x0, SPSR_EL1        // Save PSTATE
-;   str x0, [sp, 16*15+8]
+    mrs x0, SPSR_EL1        // Save PSTATE
+    str x0, [sp, 16*15+8]
     ; store the new sp value into the pcb which running points -- use .extern in c file to get the right address from assembly
     ; (note that you cannot move sp into memory directly)
     ; you hav  to do something like:
-;   adr x1, Running
-;   ldr x1, [x1]
-;   mov x4, sp
-;   str x4, [x1]
-    ; call enqueue(x0--ReadyQ, x1--Running);
+    adr x1, Running
+    ldr x1, [x1]
+    mov x4, sp
+    str x4, [x1]
+    
+    SUB SP, SP, 32
+    STR X0, [SP]
+    STR X1, [SP, 16]
+    call enqueue ;(x0--ReadyQ, x1--Running);
+    ADD SP, SP, 32
 go:
-    b restore_context
-restore_context: //this is where go() jumps to
+    b _restore_context
+_restore_context: //this is where go() jumps to
     ; call dequeue(x0 -- ReadQ)
+    SUB SP, SP, 16
+    STR X0, [SP]
+    CALL dequeue
+    ADD SP, SP, 16
     ; mov [Running], x0 ; return value of dequeue goes into Running
-    ; 
+    

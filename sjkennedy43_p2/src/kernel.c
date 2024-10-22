@@ -14,11 +14,21 @@ void main()
         // linked list queue -- dynamic size
         // no using c - malloc/c++ - new (no memory allocation)
         // use templates---so much more nice
+    ready_queue.head = NULL;
+    ready_queue.tail = NULL;
     // make a pcb data item which you can enqueue and dequeue from the round robin
     // pass a pointer/address of the first instructions of the passed process
-
-    //call print to
-    //print_to(24, 59, "Hello World");
+    if (create_process(p1) != 0)
+        exit(1);
+    if (create_process(p2) != 0)
+        exit(1);
+    if (create_process(p3) != 0)
+        exit(1);
+    if (create_process(p4) != 0)
+        exit(1);
+    
+    clear_scr(21, 49, 27, 79);// clear scr
+    
     go();
 }
 

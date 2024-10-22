@@ -1,14 +1,11 @@
 #include "queue.h"
-
-
 uint64_t * allocStack()
 {
-    // static uint32_t next_stack = 0;
-    if (next_stack == MAX_STACKS)
+    if (next_stack >= MAX_STACKS)
         return NULL;
     return stacks[next_stack++];
 }    
-PCB_t *allocPCB()
+PCB_t * allocPCB()
 {
     static int advance = 0;
     if (advance >= MAX_NUM_PCBS)
@@ -46,6 +43,8 @@ int p1()
 {
     if(box(9, 23, 11, 39) != 0)
         return -1;
+        // print_to(9, 23, errormsg)
+        // while (1)
     char message[] = "Process 1: 0";
     print_to(10, 25, message);
     int num = 0;
@@ -60,6 +59,7 @@ int p1()
         if (num > 9)
             num = 0;
         //call dispatch from process_asm
+        dispatch();
     }
 }
 int p2()
@@ -80,6 +80,7 @@ int p2()
         if (num > 9)
             num = 0;
         //call dispatch from process_asm
+        dispatch();
     }
 }
 int p3()
@@ -100,6 +101,7 @@ int p3()
         if (num > 9)
             num = 0;
         //call dispatch from process_asm
+        dispatch();
     }
 }
 int p4()
@@ -120,5 +122,6 @@ int p4()
         if (num > 9)
             num = 0;
         //call dispatch from process_asm
+        dispatch();
     }
 }
