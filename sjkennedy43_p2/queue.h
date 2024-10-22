@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdint.h>
 extern int box (unsigned int srow, unsigned int scolumn, unsigned int erow, unsigned int ecolumn);
+extern void go();
+extern void dispatch();
 struct pcb
 {
     uint64_t sp;
@@ -20,8 +22,18 @@ typedef struct pcb_q PCB_Q_t;
 
 void enqueue(PCB_Q_t *queue, PCB_t *pcb);
 PCB_t *dequeue(PCB_Q_t *queue);
-uint64_t * allocStack();
+PCB_Q_t ready_queue;
 
+uint64_t * allocStack();
+#define MAX_STACKS 10
+uint64_t stacks[MAX_STACKS][1024];
+uint32_t next_stack = 0;
+
+PCB_t * allocPCB();
+#define MAX_NUM_PCBS 100
+PCB_t pcbs[MAX_NUM_PCBS];
+
+PCB_t running;
 
 // test processes:
 

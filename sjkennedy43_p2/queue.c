@@ -1,14 +1,21 @@
 #include "queue.h"
 
-#define MAX_STACKS 10
-uint64_t stacks[MAX_STACKS][1024];
-uint32_t next_stack = 0;
+
 uint64_t * allocStack()
 {
+    // static uint32_t next_stack = 0;
     if (next_stack == MAX_STACKS)
         return NULL;
     return stacks[next_stack++];
 }    
+PCB_t *allocPCB()
+{
+    static int advance = 0;
+    if (advance >= MAX_NUM_PCBS)
+        return NULL;
+    return &pcbs[advance++];
+}
+
 void enqueue(PCB_Q_t * queue, PCB_t * pcb)
 {
     pcb->next = NULL;//set up the pcb next pointer

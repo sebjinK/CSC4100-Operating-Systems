@@ -19,6 +19,7 @@ void main()
 
     //call print to
     //print_to(24, 59, "Hello World");
+    go();
 }
 
 int clear_scr(int start_row, int start_column, int width, int height) // clear the screen row by row, column by column
