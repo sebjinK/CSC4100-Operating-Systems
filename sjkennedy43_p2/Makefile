@@ -18,7 +18,7 @@ MACHINE=raspi3b
 TARGET=kernel.elf
 
 # Object files made from source files
-OBJS=./obj/kernel.o ./obj/queue.o ./obj/process.o ./obj/boot.o ./obj/box.o ./obj/process_asm.o ./obj/libos.a
+OBJS=./obj/kernel.o ./obj/queue.o ./obj/process.o ./obj/libos.a ./obj/boot.o ./obj/box.o ./obj/process_asm.o 
 
 # source files 
 KERNEL_SRC=./src/kernel.c
@@ -35,7 +35,7 @@ $(TARGET): $(OBJS)
 	$(LD) $(LDFLAGS) $(OBJS) -o $@
 # kernel.o object should be compiled with kernel.c and CFLAGS
 ./obj/kernel.o: $(KERNEL_SRC)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $< -o $@
 # boot.o object should be compiled with boot.S and ASFLAGS
 ./obj/boot.o: $(BOOT_SRC)
 	$(CC) $(ASFLAGS) -c $< -o $@
@@ -63,4 +63,4 @@ debug: $(TARGET)
 
 # delete all possible object files, .elf files, and .d dependency files 
 clean:
-	rm ./obj/*.o *.elf ./obj/*.d
+	rm ./obj/*.o *.elf ./obj/*.d core

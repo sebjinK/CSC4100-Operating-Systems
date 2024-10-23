@@ -1,0 +1,9 @@
+
+       uint32_t * sp = (uint32_t) (stackPointer + 1024);
+    *(--sp) = (uint32_t) code_address;
+    *(--sp) = 0x3C5;
+    for (int i = 29; i >= 0; i--)
+    {
+        *(--sp) = 0;// decrement sp
+    }
+    

@@ -16,24 +16,24 @@ typedef struct pcb PCB_t;
 struct pcb_q
 {
     PCB_t * head;
-    PCB_t * tail;
+    PCB_t * tail
 };
 typedef struct pcb_q PCB_Q_t;
 
 void enqueue(PCB_Q_t *queue, PCB_t *pcb);
 PCB_t *dequeue(PCB_Q_t *queue);
-PCB_Q_t ready_queue;
+extern PCB_Q_t ready_queue;
 
 uint64_t * allocStack();
 #define MAX_STACKS 10
-uint64_t stacks[MAX_STACKS][1024];
-uint32_t next_stack = 0;
+extern uint64_t stacks[MAX_STACKS][1024];
+extern uint32_t next_stack;
 
 PCB_t * allocPCB();
 #define MAX_NUM_PCBS 100
-PCB_t pcbs[MAX_NUM_PCBS];
+extern PCB_t pcbs[MAX_NUM_PCBS];
 
-PCB_t running;
+extern PCB_t * running;
 
 // test processes:
 
