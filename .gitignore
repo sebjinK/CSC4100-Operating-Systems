@@ -1,2 +1,7 @@
 *.o
 *core
+*.elf
+*.d
+./sjkennedy43_p*/.vscode
+*/sjkennedy43_p*/.txt
+*.tar.gz

@@ -20,7 +20,7 @@ int main()
     // make a pcb data item which you can enqueue and dequeue from the round robin
     // pass a pointer/address of the first instructions of the passed process
     clear_scr(21, 49, 27, 79);// clear scr
-    if (create_process(p1) != 0)
+    if (create_process(p1) != 0) // setup and queue all four processes
         return -1;
     if (create_process(p2) != 0)
         return -1;
@@ -28,7 +28,7 @@ int main()
         return -1;
     if (create_process(p4) != 0)
         return -1;
-    go();
+    go(); // start dequeuing and running processes
     return 0;
 }
 

@@ -31,8 +31,6 @@ dispatch:
     mrs x0, SPSR_EL1        // Save PSTATE
     str x0, [sp, 16*15+8]
     // store the new sp value into the pcb which running points -- use .extern in c file to get the right address from assembly
-    // (note that you cannot move sp into memory directly)
-    // you hav  to do something like:
     adr x1, running
     ldr x1, [x1]
     mov x4, sp
@@ -40,20 +38,14 @@ dispatch:
     
 
     ADR X0, ready_queue
-    // STR X0, [SP]
-    // STR X1, [SP, 16]
     BL enqueue //(x0--ReadyQ, x1--Running);
-
+    // fall through into restore_context after branch
 _restore_context: //this is where go() jumps to
-    // STP X29, X30, [SP, -16]!
-    
     //call dequeue (x0 -- ReadyQueue)
     ADR X0, ready_queue
-    // STR X0, [SP]
     BL dequeue
 
-
-    //mov running, [X0] // return value of dequeue goes into Running
+    // return value of dequeue goes into Running
 
     adr		x1, running
     str		x0, [x1]   // store the pointer to the PCB into the Running variable
@@ -63,6 +55,7 @@ _restore_context: //this is where go() jumps to
     ldr     x0, [sp, 16*15+8]   // Restore PSTATE
     msr     SPSR_EL1, x0
 
+    // load all registers back
     LDP X0, X1, [SP]
     LDP X2, X3, [SP, 16]
     LDP X4, X5, [SP, 16*2]
@@ -80,6 +73,4 @@ _restore_context: //this is where go() jumps to
     LDP X28, X29, [SP, 16*14]
     LDR X30, [SP, 16*15]
     ADD SP, SP, 256
-
-    // LDP X29, X30, [SP], 16
     RET
