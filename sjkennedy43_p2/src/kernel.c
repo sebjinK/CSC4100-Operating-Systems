@@ -9,8 +9,9 @@ int main()
     clear_scr(21, 49, 27, 79);
     //putc_to(24, 59, 'H');
     //call box so we can use the assembly function
-    if (box(21, 49, 27, 79) == 0) //sr, sc, er, ec
-        print_to(24, 59, "Running Processes");
+    //if (box(21, 49, 27, 79) == 0) //sr, sc, er, ec
+    print_to(6, 36, "Running Processes");
+    print_to(7, 36, "-----------------");
     // init Round Robin Queue data structure
         // linked list queue -- dynamic size
         // no using c - malloc/c++ - new (no memory allocation)
@@ -19,7 +20,7 @@ int main()
     ready_queue.tail = NULL;
     // make a pcb data item which you can enqueue and dequeue from the round robin
     // pass a pointer/address of the first instructions of the passed process
-    clear_scr(21, 49, 27, 79);// clear scr
+    //clear_scr(21, 49, 27, 79);// clear scr
     if (create_process(p1) != 0) // setup and queue all four processes
         return -1;
     if (create_process(p2) != 0)
