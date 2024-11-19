@@ -20,11 +20,10 @@ dispatch:
 
     SUB X1, X1, 16*17
         // subtract 16 * 17 from the stack 
-
     // copy all registers to the stack (in the order x0, x1, ..., x30)
-    // STP X0, X1, [X1]
+
     STR X0,         [X1]
-    LDR X0,         [SP], 16
+    LDR X0,         [SP], 16 // save x1 aaway to X0 cause we don't need X0 anymore
     STR X0,         [X1, 8]
     STP X2, X3,     [X1, 16]
     STP X4, X5,     [X1, 16*2]
@@ -49,13 +48,14 @@ dispatch:
     mrs x0, ELR_EL1 // save interrupt return address
     str x0, [X1, 16*16]
 
-    // store the new sp value into the pcb which running points -- use .extern in c file to get the right address from assembly
-    adr x1, running
-    ldr x1, [x1]
-    mov x4, sp
-    str x4, [x1]
-
-    ADR X0, ready_queue
+    ADR X4, running // use X4 as a way to store a temporary running variable
+    LDR X4, [X4] // load the running variable into temporary register
+    MOV X5, X1 // X5 now holds the top of the stack for the running process
+    STR X5, [X4] // the running varaible holds the top of the stack for the chosen process
+    
+    ADR X0, ready_queue // store the address of the ready queeu into the X0 register
+    ADR X1, running //store the address of the running process into the X1 register
+    LDR X1, [X1] // load the entire running process into X1 register
     BL enqueue //(x0--ReadyQ, x1--Running);
     // fall through into restore_context after branch
 _restore_context: //this is where go() jumps to
@@ -63,22 +63,22 @@ _restore_context: //this is where go() jumps to
     ADR X0, ready_queue
     BL dequeue
 
-    // return value of dequeue goes into Running
-    adr		x1, running
-    str		x0, [x1]   // store the pointer to the PCB into the Running variable
-    ldr		x2, [x0]   // x2 now has the value of the stack ptr (we cant ldr sp directly)
-    mov		sp, x2     // sp now has the top of stack for the chosen process
+    adr x1, running /// Store the address of the running process into X1
+    str x0, [x1] // store the pointer to the PCB into the Running variable
+    ldr x2, [x0] // X2 now holds the value of the stack ptr (we can't load X1/process stack pointer directly)
+    mov X1, x2  // move the stack pointer into X1
 
-    ldr     x0, [sp, 16*15+8]   // Restore PSTATE
+    ldr     x0, [X1, 16*15+8]   // Restore PSTATE
     msr     SPSR_EL1, x0
-    ldr     x0, [sp, 16*16]     // Restore Interrupt address
+
+    ldr     x0, [X1, 16*16]     // Restore Interrupt address
     msr     ELR_EL1, x0
 
-    mov x0, x1
-    add x0, x0, 16*17
-    MSR SP_EL0, x0
+    mov x0, x1          // save the process stack to x0
+    add x0, x0, 16*17   // clear the process stack
+    MSR SP_EL0, x0      // move the stack stack back to SP_EL0
 
-    // load all registers back
+    // load all registers back except x0, x1, x30 since we'll be using those later
     LDP X2, X3,     [X1, 16]
     LDP X4, X5,     [X1, 16*2]
     LDP X6, X7,     [X1, 16*3]
@@ -94,20 +94,19 @@ _restore_context: //this is where go() jumps to
     LDP X26, X27,   [X1, 16*13]
     LDP X28, X29,   [X1, 16*14]
 
-
     SUB SP, SP, 16
-    STP X0, X1, [X1, 16]
+    STP X0, X1, [SP, 16] // use x0 and x1 for clear timer so we have to save it to OS stack
     BL clear_timer
     LDP X0, X1, [SP, 16]
     ADD SP, SP, 16
 
-    LDR X30, [X1, 16*15]
+    LDR X30, [X1, 16*15] // restore the X30 register
 
-    LDP X0, X1, [X1]
+    LDP X0, X1, [X1] // restore the x0, x1 registers
 
-    msr     DAIFClr, #0x2
+    msr     DAIFClr, #0x2 // restore the interrupts
 
-    eret
+    eret        // eret to specified address
 
 setup_EVT:
     // set up the exception vector table

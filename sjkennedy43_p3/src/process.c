@@ -14,7 +14,7 @@ int create_process(int (*code_address)())// code_address is the pointer to thfun
         sp--;// decrement sp
         *sp = 0;// set uint64_t at which sp points to 0
     }
-    *(sp + 32) = (uint64_t)code_address;// [sp + 30] to code_address (type cast as uint64_t so compiler doesn't complain)
+    sp[32] = (uint64_t)code_address;// [sp + 30] to code_address (type cast as uint64_t so compiler doesn't complain)
     PCB_t * pcb = allocPCB();// allocates a pcb within the stack
     if (!pcb)
         return -1;// check if the pcb doesn't exist

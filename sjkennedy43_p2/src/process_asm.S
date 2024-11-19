@@ -45,8 +45,6 @@ _restore_context: //this is where go() jumps to
     ADR X0, ready_queue
     BL dequeue
 
-    // return value of dequeue goes into Running
-
     adr		x1, running
     str		x0, [x1]   // store the pointer to the PCB into the Running variable
     ldr		x2, [x0]   // x2 now has the value of the stack ptr (we cant ldr sp directly)

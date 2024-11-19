@@ -59,7 +59,7 @@ run: $(TARGET)
 # debug using the target as a dependency; use & to run two commands at once 
 debug: $(TARGET)
 	$(QEMU) -machine $(MACHINE) -S -s -kernel $< &
-	ddd --debugger '$(GDB) -ex "target remote localhost:1234" -ex "break main" -ex "continue"' $<
+	ddd --debugger '$(GDB) -ex "target remote localhost:1234" -ex "break _restore_context" -ex "continue"' $<
 
 # delete all possible object files, .elf files, and .d dependency files 
 clean:
